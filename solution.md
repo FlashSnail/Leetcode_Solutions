@@ -4,6 +4,8 @@ This repository is my leetcode solutions, maybe some of these solutions are not 
 
 I will give some tips in comment.
 
+If you cannot see the table of content, you can download this file and open it use your local markdown editor. Otherwise it's not convenient for you to index problem which you are interested.
+
 [TOC]
 
 ## 1. Two Sum
