@@ -636,12 +636,535 @@ Output: false
 
 ```python
 class Solution:
-    def isMatch(self, s, p):
+    def isMatch(self, text, pattern):
+        if not pattern:
+            return not text
+
+        first_match = bool(text) and pattern[0] in {text[0], '.'}
+
+        if len(pattern) >= 2 and pattern[1] == '*':
+            return (self.isMatch(text, pattern[2:]) or
+                    first_match and self.isMatch(text[1:], pattern))
+        else:
+            return first_match and self.isMatch(text[1:], pattern[1:])
+        
+```
+
+
+
+## 92. Reverse Linked List II
+
+Reverse a linked list from position *m* to *n*. Do it in one-pass.
+
+**Note:** 1 ≤ *m* ≤ *n* ≤ length of list.
+
+**Example:**
+
+```
+Input: 1->2->3->4->5->NULL, m = 2, n = 4
+Output: 1->4->3->2->5->NULL
+```
+
+**CODE**
+
+```python
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def reverseBetween(self, head, m, n):
         """
-        :type s: str
-        :type p: str
-        :rtype: bool
+        :type head: ListNode
+        :type m: int
+        :type n: int
+        :rtype: ListNode
+        """
+        node=head
+        prev=None
+        index = 1
+        #pass to the first node
+        while(node):
+            if index == m:
+                break
+            prev=node
+            node=node.next
+            index += 1
+        #case1:
+        if n-m==0:
+            pass
+        #case2:
+        elif n-m==1:
+            a=node
+            b=a.next
+            c=b.next if b else None
+            #first node to next.next
+            a.next=c
+            #change b to a
+            b.next=a
+            #if prev exists, to b
+            if prev:
+                prev.next=b
+            #else b is the head node
+            else:
+                head=b
+           
+        else:
+            #finish reverse
+            a=node
+            b=a.next
+            c=b.next if b else None
+            while(index<n):
+                b.next=a
+                a=b
+                b=c
+                c=c.next if b else None
+                index += 1
+            #change first and last node link to
+            if prev:
+                prev.next=a
+            else:
+                head =a
+            node.next=b
+        return head
+        
+```
+
+
+
+## 94. Binary Tree Inorder Traversal
+
+Given a binary tree, return the *inorder* traversal of its nodes' values.
+
+**Example:**
+
+```
+Input: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
+
+Output: [1,3,2]
+```
+
+**Follow up:** Recursive solution is trivial, could you do it iteratively?
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def inorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        s = []
+        p = root
+        ans = []
+        while(p or len(s)>0):
+            if p:
+                s.append(p)
+                p = p.left
+            else:
+                p = s[-1]
+                s.pop()
+                ans.append(p.val)
+                p = p.right
+        return ans
+                
+        
+```
+
+
+
+## 95. Unique Binary Search Trees II
+
+Given an integer *n*, generate all structurally unique **BST's** (binary search trees) that store values 1 ... *n*.
+
+**Example:**
+
+```
+Input: 3
+Output:
+[
+  [1,null,3,2],
+  [3,2,null,1],
+  [3,1,null,null,2],
+  [2,1,3],
+  [1,null,2,null,3]
+]
+Explanation:
+The above output corresponds to the 5 unique BST's shown below:
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+```
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def generateTrees(self, n):
+        """
+        :type n: int
+        :rtype: List[TreeNode]
         """
         
+        
+        
+```
+
+
+
+
+
+## 206. Reverse Linked List
+
+Reverse a singly linked list.
+
+**Example:**
+
+```
+Input: 1->2->3->4->5->NULL
+Output: 5->4->3->2->1->NULL
+```
+
+**Follow up:**
+
+A linked list can be reversed either iteratively or recursively. Could you implement both?
+
+**CODE**
+
+```python
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def reverseList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if head is None:
+            return None
+        if head.next is None:
+            return head
+        if head.next.next is None:
+            a=head
+            b=head.next
+            b.next=a
+            a.next=None
+            return b
+        a=head
+        b=a.next
+        c=b.next
+        a.next=None
+        while(c):
+            b.next=a
+            a=b
+            b=c
+            c=c.next
+        b.next = a
+        return b
+```
+
+
+
+## 310. Minimum Height Trees
+
+For an undirected graph with tree characteristics, we can choose any node as the root. The result graph is then a rooted tree. Among all possible rooted trees, those with minimum height are called minimum height trees (MHTs). Given such a graph, write a function to find all the MHTs and return a list of their root labels.
+
+**Format**
+The graph contains `n` nodes which are labeled from `0` to `n - 1`. You will be given the number `n` and a list of undirected `edges` (each edge is a pair of labels).
+
+You can assume that no duplicate edges will appear in `edges`. Since all edges are undirected, `[0, 1]` is the same as `[1, 0]` and thus will not appear together in `edges`.
+
+**Example 1 :**
+
+```
+Input: n = 4, edges = [[1, 0], [1, 2], [1, 3]]
+
+        0
+        |
+        1
+       / \
+      2   3 
+
+Output: [1]
+```
+
+**Example 2 :**
+
+```
+Input: n = 6, edges = [[0, 3], [1, 3], [2, 3], [4, 3], [5, 4]]
+
+     0  1  2
+      \ | /
+        3
+        |
+        4
+        |
+        5 
+
+Output: [3, 4]
+```
+
+**Note**:
+
+- According to the [definition of tree on Wikipedia](https://en.wikipedia.org/wiki/Tree_(graph_theory)): “a tree is an undirected graph in which any two vertices are connected by *exactly* one path. In other words, any connected graph without simple cycles is a tree.”
+- The height of a rooted tree is the number of edges on the longest downward path between the root and a leaf.
+
+**CODE**
+
+```python
+class Solution(object):
+    def findMinHeightTrees(self, n, edges):
+        """
+        :type n: int
+        :type edges: List[List[int]]
+        :rtype: List[int]
+        """
+        
+```
+
+
+
+## 654. Maximum Binary Tree
+
+Given an integer array with no duplicates. A maximum tree building on this array is defined as follow:
+
+1. The root is the maximum number in the array.
+2. The left subtree is the maximum tree constructed from left part subarray divided by the maximum number.
+3. The right subtree is the maximum tree constructed from right part subarray divided by the maximum number.
+
+
+
+Construct the maximum tree by the given array and output the root node of this tree.
+
+**Example 1:**
+
+```
+Input: [3,2,1,6,0,5]
+Output: return the tree root node representing the following tree:
+
+      6
+    /   \
+   3     5
+    \    / 
+     2  0   
+       \
+        1
+```
+
+**Note:**
+
+1. The size of the given array will be in the range [1,1000].
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def constructMaximumBinaryTree(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: TreeNode
+        """
+        if len(nums) == 0:
+            return
+        root = TreeNode(max(nums))
+        left = nums[:nums.index(max(nums))]
+        root.left = self.constructMaximumBinaryTree(left)
+        right = nums[nums.index(max(nums))+1:]
+        root.right = self.constructMaximumBinaryTree(right)
+        return root
+```
+
+
+
+## 563. Binary Tree Tilt
+
+Given a binary tree, return the tilt of the **whole tree**.
+
+The tilt of a **tree node** is defined as the **absolute difference** between the sum of all left subtree node values and the sum of all right subtree node values. Null node has tilt 0.
+
+The tilt of the **whole tree** is defined as the sum of all nodes' tilt.
+
+**Example:**
+
+```
+Input: 
+         1
+       /   \
+      2     3
+Output: 1
+Explanation: 
+Tilt of node 2 : 0
+Tilt of node 3 : 0
+Tilt of node 1 : |2-3| = 1
+Tilt of binary tree : 0 + 0 + 1 = 1
+```
+
+**Note:**
+
+1. The sum of node values in any subtree won't exceed the range of 32-bit integer.
+2. All the tilt values won't exceed the range of 32-bit integer.
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    ans = 0
+    def findTilt(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        self.addTilt(root)
+        return self.ans
+        
+    def addTilt(self, node):
+        if node is None:
+            return 0
+        left = self.addTilt(node.left)
+        right = self.addTilt(node.right)
+        self.ans += abs(left - right)
+        #description of this problem is not correct, it doesn't mention add node.val
+        return left+right+node.val
+```
+
+
+
+
+
+## 572. Subtree of Another Tree
+
+Given two non-empty binary trees **s** and **t**, check whether tree **t** has exactly the same structure and node values with a subtree of **s**. A subtree of **s** is a tree consists of a node in **s** and all of this node's descendants. The tree **s** could also be considered as a subtree of itself.
+
+**Example 1:**
+Given tree s:
+
+```
+     3
+    / \
+   4   5
+  / \
+ 1   2
+```
+
+Given tree t:
+
+```
+   4 
+  / \
+ 1   2
+```
+
+Return 
+
+true
+
+, because t has the same structure and node values with a subtree of s.
+
+**Example 2:**
+Given tree s:
+
+```
+     3
+    / \
+   4   5
+  / \
+ 1   2
+    /
+   0
+```
+
+Given tree t:
+
+```
+   4
+  / \
+ 1   2
+```
+
+Return 
+
+false
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def isSub(self,s,t):
+        if t is None and s is None:
+            return True
+        if (t and not s) or (not t and s) :
+            return False
+        if s.val != t.val:
+            return False
+        return self.isSub(s.left,t.left) and self.isSub(s.right,t.right)
+    
+    def isSubtree(self, s, t):
+        """
+        :type s: TreeNode
+        :type t: TreeNode
+        :rtype: bool
+        """
+        if t is None:
+            return True
+        if s is None:
+            return False
+        res = False
+        if t.val == s.val:
+            res = self.isSub(s,t)
+        if not res:
+            res = self.isSubtree(s.left,t)
+        if not res:
+            res = self.isSubtree(s.right,t)
+        return res
 ```
 
