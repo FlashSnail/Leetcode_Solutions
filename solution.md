@@ -652,6 +652,393 @@ class Solution:
 
 
 
+## 11. Container With Most Water
+
+Given *n* non-negative integers *a1*, *a2*, ..., *an* , where each represents a point at coordinate (*i*, *ai*). *n* vertical lines are drawn such that the two endpoints of line *i*is at (*i*, *ai*) and (*i*, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+
+**Note:** You may not slant the container and *n* is at least 2.
+
+ 
+
+![img](https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg)
+
+The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
+
+**Example:**
+
+```
+Input: [1,8,6,2,5,4,8,3,7]
+Output: 49
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int right = height.size() - 1;
+        int left = 0;
+        int ans = 0;
+        while (left < right){
+            ans = max(ans, min(height[left], height[right])*(right - left));
+            if (height[left] < height[right]) {
+                left++;
+            }
+            else{
+                right--;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+
+
+## 12. Integer to Roman
+
+Roman numerals are represented by seven different symbols: `I`, `V`, `X`, `L`, `C`, `D` and `M`.
+
+```
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+```
+
+For example, two is written as `II` in Roman numeral, just two one's added together. Twelve is written as, `XII`, which is simply `X` + `II`. The number twenty seven is written as `XXVII`, which is `XX` + `V` + `II`.
+
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not `IIII`. Instead, the number four is written as `IV`. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as `IX`. There are six instances where subtraction is used:
+
+- `I` can be placed before `V` (5) and `X` (10) to make 4 and 9. 
+- `X` can be placed before `L` (50) and `C` (100) to make 40 and 90. 
+- `C` can be placed before `D` (500) and `M` (1000) to make 400 and 900.
+
+Given an integer, convert it to a roman numeral. Input is guaranteed to be within the range from 1 to 3999.
+
+**Example 1:**
+
+```
+Input: 3
+Output: "III"
+```
+
+**Example 2:**
+
+```
+Input: 4
+Output: "IV"
+```
+
+**Example 3:**
+
+```
+Input: 9
+Output: "IX"
+```
+
+**Example 4:**
+
+```
+Input: 58
+Output: "LVIII"
+Explanation: L = 50, V = 5, III = 3.
+```
+
+**Example 5:**
+
+```
+Input: 1994
+Output: "MCMXCIV"
+Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+```
+
+**CODE**
+
+```C++
+class Solution {
+public:
+    string intToRoman(int num) {
+        vector<int> ans;
+        vector<char> symbol = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
+        vector<int> value = {1000, 500, 100, 50, 10, 5, 1};
+        for(int i=0; i<symbol.size(); i++){
+            int v = num / value[i];
+            ans.push_back(v);
+            num -= (v * value[i]);
+        }
+        string res = "";
+        int j = 0;
+        while(j < ans.size()){
+            if(ans[j+1] == 4){
+                string tmp(ans[j+1], symbol[j]);
+                res += symbol[j+1];
+                res += symbol[j-ans[j]]; //如果当前位置有值则取前一位(如9)，否则取当前位(如4)
+                j += 2;
+            }
+            else{
+                string tmp(ans[j], symbol[j]);
+                res += tmp;
+                j++;
+            }
+        }
+        return res;
+    }
+};
+```
+
+
+
+## 13. Roman to Integer
+
+Roman numerals are represented by seven different symbols: `I`, `V`, `X`, `L`, `C`, `D` and `M`.
+
+```
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+```
+
+For example, two is written as `II` in Roman numeral, just two one's added together. Twelve is written as, `XII`, which is simply `X` + `II`. The number twenty seven is written as `XXVII`, which is `XX` + `V` + `II`.
+
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not `IIII`. Instead, the number four is written as `IV`. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as `IX`. There are six instances where subtraction is used:
+
+- `I` can be placed before `V` (5) and `X` (10) to make 4 and 9. 
+- `X` can be placed before `L` (50) and `C` (100) to make 40 and 90. 
+- `C` can be placed before `D` (500) and `M` (1000) to make 400 and 900.
+
+Given a roman numeral, convert it to an integer. Input is guaranteed to be within the range from 1 to 3999.
+
+**Example 1:**
+
+```
+Input: "III"
+Output: 3
+```
+
+**Example 2:**
+
+```
+Input: "IV"
+Output: 4
+```
+
+**Example 3:**
+
+```
+Input: "IX"
+Output: 9
+```
+
+**Example 4:**
+
+```
+Input: "LVIII"
+Output: 58
+Explanation: L = 50, V= 5, III = 3.
+```
+
+**Example 5:**
+
+```
+Input: "MCMXCIV"
+Output: 1994
+Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    int romanToInt(string s) {
+        map<char,int> m;
+        vector<char> symbol = {'M', 'D', 'C', 'L', 'X', 'V', 'I'};
+        vector<int> value = {1000, 500, 100, 50, 10, 5, 1};
+        for(int i=0; i<symbol.size(); i++){
+            m[symbol[i]] = value[i];
+        }
+        
+        if(s.size() == 1){
+            return m[s[0]];
+        }
+        
+        int ans = 0;
+        int i = 0;
+        while(i < s.size() - 1){
+            if(m[s[i+1]] > m[s[i]]){
+                ans += m[s[i+1]] - m[s[i]];
+                i += 2;
+            }
+            else{
+                ans += m[s[i]];
+                i++;
+            }
+        }
+        if(m[s[s.size()-1]] <= m[s[s.size()-2]]){
+            ans += m[s[s.size()-1]];
+        }
+        return ans;
+    }
+};
+```
+
+
+
+## 14. Longest Common Prefix
+
+Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string `""`.
+
+**Example 1:**
+
+```
+Input: ["flower","flow","flight"]
+Output: "fl"
+```
+
+**Example 2:**
+
+```
+Input: ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+```
+
+**Note:**
+
+All given inputs are in lowercase letters `a-z`.
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if(strs.size() == 0){
+            return "";
+        }
+        int len = 4096;
+        for(int i = 0; i<strs.size(); i++){
+            len = min(len, strs[i].size());
+        }
+        string ans = "";
+        for(int i = 0; i<len; i++){
+            char tmp = strs[0][i]
+            for(int j=1; j<strs.size(); j++){
+                if(strs[j][i] != tmp){
+                    return ans;
+                }
+            }
+            ans += tmp;
+        }
+        return ans;
+    }
+};
+```
+
+
+
+## 15. 3Sum
+
+Given an array `nums` of *n* integers, are there elements *a*, *b*, *c* in `nums` such that *a* + *b* + *c* = 0? Find all unique triplets in the array which gives the sum of zero.
+
+**Note:**
+
+The solution set must not contain duplicate triplets.
+
+**Example:**
+
+```
+Given array nums = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        
+        int n_size = nums.size();
+        
+        // actually the pivot
+        for (int nidx=0; nidx<n_size; nidx++) {
+            if (nidx > 0 && nums[nidx] == nums[nidx - 1]) {
+                continue;
+            }
+            int l = nidx + 1;
+            int r = n_size - 1;
+            int rem = -nums[nidx];
+            while (l < r) {
+                while (nums[l] + nums[r] < rem && l < r) {
+                    l++;
+                }
+                while (nums[l] + nums[r] > rem && l < r) {
+                    r--;
+                }
+                if (l < r && nums[l] + nums[r] == rem) {
+                    int numl = nums[l], numr = nums[r];
+                    res.push_back(vector<int> {nums[nidx], numl, numr});
+                    l++, r--;
+                    while (l < n_size && nums[l] == numl) l++;
+                    while (r > -1 && nums[r] == numr) r--;
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+
+
+## 16. 3Sum Closest
+
+Given an array `nums` of *n* integers and an integer `target`, find three integers in `nums` such that the sum is closest to `target`. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+**Example:**
+
+```
+Given array nums = [-1, 2, 1, -4], and target = 1.
+
+The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        
+    }
+};
+```
+
+
+
+
+
 ## 92. Reverse Linked List II
 
 Reverse a linked list from position *m* to *n*. Do it in one-pass.
@@ -729,60 +1116,6 @@ class Solution(object):
                 head =a
             node.next=b
         return head
-        
-```
-
-
-
-## 94. Binary Tree Inorder Traversal
-
-Given a binary tree, return the *inorder* traversal of its nodes' values.
-
-**Example:**
-
-```
-Input: [1,null,2,3]
-   1
-    \
-     2
-    /
-   3
-
-Output: [1,3,2]
-```
-
-**Follow up:** Recursive solution is trivial, could you do it iteratively?
-
-**CODE**
-
-```python
-# Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
-class Solution(object):
-    def inorderTraversal(self, root):
-        """
-        :type root: TreeNode
-        :rtype: List[int]
-        """
-        s = []
-        p = root
-        ans = []
-        while(p or len(s)>0):
-            if p:
-                s.append(p)
-                p = p.left
-            else:
-                p = s[-1]
-                s.pop()
-                ans.append(p.val)
-                p = p.right
-        return ans
-                
         
 ```
 
@@ -948,66 +1281,23 @@ class Solution(object):
         :type edges: List[List[int]]
         :rtype: List[int]
         """
-        
-```
-
-
-
-## 654. Maximum Binary Tree
-
-Given an integer array with no duplicates. A maximum tree building on this array is defined as follow:
-
-1. The root is the maximum number in the array.
-2. The left subtree is the maximum tree constructed from left part subarray divided by the maximum number.
-3. The right subtree is the maximum tree constructed from right part subarray divided by the maximum number.
-
-
-
-Construct the maximum tree by the given array and output the root node of this tree.
-
-**Example 1:**
-
-```
-Input: [3,2,1,6,0,5]
-Output: return the tree root node representing the following tree:
-
-      6
-    /   \
-   3     5
-    \    / 
-     2  0   
-       \
-        1
-```
-
-**Note:**
-
-1. The size of the given array will be in the range [1,1000].
-
-**CODE**
-
-```python
-# Definition for a binary tree node.
-# class TreeNode(object):
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
-class Solution(object):
-    def constructMaximumBinaryTree(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: TreeNode
-        """
-        if len(nums) == 0:
-            return
-        root = TreeNode(max(nums))
-        left = nums[:nums.index(max(nums))]
-        root.left = self.constructMaximumBinaryTree(left)
-        right = nums[nums.index(max(nums))+1:]
-        root.right = self.constructMaximumBinaryTree(right)
-        return root
+        tree=[[] for _ in range(n)]
+        for s,d in edges:
+            tree[s].append(d)
+            tree[d].append(s)
+        outside=[i for i in range(n) if len(tree[i]) < 2]
+        inside=[]
+        while(1):
+            for node in outside:
+                for c_node in tree[node]:
+                    tree[c_node].remove(node)
+                    if len(tree[c_node])==1:
+                        inside.append(c_node)
+            if not inside:
+                break
+            outside=inside
+            inside=[]
+        return outside
 ```
 
 
@@ -1166,5 +1456,480 @@ class Solution(object):
         if not res:
             res = self.isSubtree(s.right,t)
         return res
+```
+
+
+
+## 654. Maximum Binary Tree
+
+Given an integer array with no duplicates. A maximum tree building on this array is defined as follow:
+
+1. The root is the maximum number in the array.
+2. The left subtree is the maximum tree constructed from left part subarray divided by the maximum number.
+3. The right subtree is the maximum tree constructed from right part subarray divided by the maximum number.
+
+
+
+Construct the maximum tree by the given array and output the root node of this tree.
+
+**Example 1:**
+
+```
+Input: [3,2,1,6,0,5]
+Output: return the tree root node representing the following tree:
+
+      6
+    /   \
+   3     5
+    \    / 
+     2  0   
+       \
+        1
+```
+
+**Note:**
+
+1. The size of the given array will be in the range [1,1000].
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def constructMaximumBinaryTree(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: TreeNode
+        """
+        if len(nums) == 0:
+            return
+        root = TreeNode(max(nums))
+        left = nums[:nums.index(max(nums))]
+        root.left = self.constructMaximumBinaryTree(left)
+        right = nums[nums.index(max(nums))+1:]
+        root.right = self.constructMaximumBinaryTree(right)
+        return root
+```
+
+
+
+## 655. Print Binary Tree
+
+Print a binary tree in an m*n 2D string array following these rules:
+
+1. The row number `m` should be equal to the height of the given binary tree.
+2. The column number `n` should always be an odd number.
+3. The root node's value (in string format) should be put in the exactly middle of the first row it can be put. The column and the row where the root node belongs will separate the rest space into two parts (**left-bottom part and right-bottom part**). You should print the left subtree in the left-bottom part and print the right subtree in the right-bottom part. The left-bottom part and the right-bottom part should have the same size. Even if one subtree is none while the other is not, you don't need to print anything for the none subtree but still need to leave the space as large as that for the other subtree. However, if two subtrees are none, then you don't need to leave space for both of them.
+4. Each unused space should contain an empty string `""`.
+5. Print the subtrees following the same rules.
+
+**Example 1:**
+
+```
+Input:
+     1
+    /
+   2
+Output:
+[["", "1", ""],
+ ["2", "", ""]]
+```
+
+
+
+**Example 2:**
+
+```
+Input:
+     1
+    / \
+   2   3
+    \
+     4
+Output:
+[["", "", "", "1", "", "", ""],
+ ["", "2", "", "", "", "3", ""],
+ ["", "", "4", "", "", "", ""]]
+```
+
+
+
+**Example 3:**
+
+```
+Input:
+      1
+     / \
+    2   5
+   / 
+  3 
+ / 
+4 
+Output:
+
+[["",  "",  "", "",  "", "", "", "1", "",  "",  "",  "",  "", "", ""]
+ ["",  "",  "", "2", "", "", "", "",  "",  "",  "",  "5", "", "", ""]
+ ["",  "3", "", "",  "", "", "", "",  "",  "",  "",  "",  "", "", ""]
+ ["4", "",  "", "",  "", "", "", "",  "",  "",  "",  "",  "", "", ""]]
+```
+
+**Note:** The height of binary tree is in the range of [1, 10].
+
+**CODE**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def printTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[str]]
+        """
+        if root is None:
+            return []
+        ans = []
+        queue = [(1,root)]
+        deep=1
+        none_cot=0
+        while(len(queue)>0):
+            tmp=0
+            node = queue[0]
+            queue.pop(0)
+            
+            if node[1] is None:
+                ans.append((node[0],""))
+                #continue
+            else:
+                ans.append((node[0],str(node[1].val)))
+                
+                if node[1].left or node[1].right:
+                    tmp=node[0]+1
+                    deep = max(deep, tmp)
+            tmp=node[0]+1
+            if node[1]:
+                none_cot=0
+                if node[1].left:
+                    left = (tmp,node[1].left)
+                else:
+                    left = (tmp,None)
+                queue.append(left)
+
+                if node[1].right:
+                    right = (tmp,node[1].right)
+                else:
+                    right = (tmp,None)
+                queue.append(right)
+            else:
+                none_cot+=1
+                if none_cot>2**deep:
+                    break
+                left = (tmp,None)
+                right = (tmp,None)
+                queue.append(left)
+                queue.append(right)
+        	
+        #print this tree    
+        res = [[""]*(2**deep-1) for i in range(deep)]
+        #(x,y,val)
+        grid = [[0,(2**deep-1)//2,ans[0][1]]]
+        for i in range(1,deep):
+            s=2**i-1
+            for j in range(s,s+2**i,2):
+                y = (2**(deep-i)-1)//2
+                father = grid[(j-1)/2]
+                grid.append((ans[j][0]-1,father[1]-y-1,ans[j][1]))
+                grid.append((ans[j+1][0]-1,father[1]+y+1,ans[j+1][1]))
+        #return grid
+        for i in grid:
+            res[i[0]][i[1]]=i[2]
+        return res
+```
+
+
+
+## 662. Maximum Width of Binary Tree
+
+Given a binary tree, write a function to get the maximum width of the given tree. The width of a tree is the maximum width among all levels. The binary tree has the same structure as a **full binary tree**, but some nodes are null.
+
+The width of one level is defined as the length between the end-nodes (the leftmost and right most non-null nodes in the level, where the `null` nodes between the end-nodes are also counted into the length calculation.
+
+**Example 1:**
+
+```
+Input: 
+
+           1
+         /   \
+        3     2
+       / \     \  
+      5   3     9 
+
+Output: 4
+Explanation: The maximum width existing in the third level with the length 4 (5,3,null,9).
+```
+
+**Example 2:**
+
+```
+Input: 
+
+          1
+         /  
+        3    
+       / \       
+      5   3     
+
+Output: 2
+Explanation: The maximum width existing in the third level with the length 2 (5,3).
+```
+
+**Example 3:**
+
+```
+Input: 
+
+          1
+         / \
+        3   2 
+       /        
+      5      
+
+Output: 2
+Explanation: The maximum width existing in the second level with the length 2 (3,2).
+```
+
+**Example 4:**
+
+```
+Input: 
+
+          1
+         / \
+        3   2
+       /     \  
+      5       9 
+     /         \
+    6           7
+Output: 8
+Explanation:The maximum width existing in the fourth level with the length 8 (6,null,null,null,null,null,null,7).
+```
+
+**Note:** Answer will in the range of 32-bit signed integer.
+
+**CODE**
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> left;
+    vector<int> right;
+    int widthOfBinaryTree(TreeNode* root) {
+		left_dfs(root);
+        right_dfs(root);
+        level = min(left.size(),right.size());
+        return pow(2,level-1);
+    }
+    int left_dfs(TreeNode* node) {
+        if (node == NULL){
+            return 0;
+        }
+        left.push_back(node->val);
+        left_dfs(node->left);
+    }
+    int right_dfs(TreeNode* node) {
+        if (node == NULL){
+            return 0;
+        }
+        right.push_back(node->val);
+        right_dfs(node->right); 
+    }
+};
+```
+
+
+
+
+
+## 965. Univalued Binary Tree
+
+A binary tree is *univalued* if every node in the tree has the same value.
+
+Return `true` if and only if the given tree is univalued.
+
+ 
+
+**Example 1:**
+
+![img](https://assets.leetcode.com/uploads/2018/12/28/unival_bst_1.png)
+
+
+
+```
+Input: [1,1,1,1,1,null,1]
+Output: true
+```
+
+**Example 2:**
+
+![img](https://assets.leetcode.com/uploads/2018/12/28/unival_bst_2.png)
+
+```
+Input: [2,2,2,5,2]
+Output: false
+```
+
+ 
+
+**Note:**
+
+1. The number of nodes in the given tree will be in the range `[1, 100]`.
+2. Each node's value will be an integer in the range `[0, 99]`.
+
+**CODE**
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isUnivalTree(TreeNode* root) {
+        return preOrder(root);
+    }
+    
+    bool preOrder(TreeNode* root){
+        if (!root)
+            return false;
+        stack<TreeNode*> s;
+        s.push(root);
+        int b = root->val;
+        while (!s.empty()){
+            TreeNode* node = s.top();
+            s.pop();
+            if (node->val != b)
+                return false;
+            if (node->left)
+                s.push(node->left);
+            if (node->right)
+                s.push(node->right);
+        }
+        return true;
+    }
+};
+```
+
+
+
+## 979. Distribute Coins in Binary Tree
+
+Given the `root` of a binary tree with `N` nodes, each `node` in the tree has `node.val` coins, and there are `N` coins total.
+
+In one move, we may choose two adjacent nodes and move one coin from one node to another.  (The move may be from parent to child, or from child to parent.)
+
+Return the number of moves required to make every node have exactly one coin.
+
+ 
+
+**Example 1:**
+
+**![img](https://assets.leetcode.com/uploads/2019/01/18/tree1.png)**
+
+```
+Input: [3,0,0]
+Output: 2
+Explanation: From the root of the tree, we move one coin to its left child, and one coin to its right child.
+```
+
+**Example 2:**
+
+**![img](https://assets.leetcode.com/uploads/2019/01/18/tree2.png)**
+
+```
+Input: [0,3,0]
+Output: 3
+Explanation: From the left child of the root, we move two coins to the root [taking two moves].  Then, we move one coin from the root of the tree to the right child.
+```
+
+**Example 3:**
+
+**![img](https://assets.leetcode.com/uploads/2019/01/18/tree3.png)**
+
+```
+Input: [1,0,2]
+Output: 2
+```
+
+**Example 4:**
+
+**![img](https://assets.leetcode.com/uploads/2019/01/18/tree4.png)**
+
+```
+Input: [1,0,0,null,3]
+Output: 4
+```
+
+ 
+
+**Note:**
+
+1. `1<= N <= 100`
+2. `0 <= node.val <= N`
+
+**CODE**
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int ans = 0;
+    int distributeCoins(TreeNode* root) {
+        dfs(root);
+        return ans;
+    }
+    int dfs(TreeNode* node){
+        if (node == NULL){
+            return 0;
+        }
+        int L = dfs(node->left);
+        int R = dfs(node->right);
+        ans += abs(L)+abs(R);
+        return node->val + L + R - 1;
+    }
+};
 ```
 
