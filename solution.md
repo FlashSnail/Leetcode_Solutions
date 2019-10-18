@@ -1030,7 +1030,453 @@ The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
 class Solution {
 public:
     int threeSumClosest(vector<int>& nums, int target) {
-        
+        sort(nums.begin(), nums.end());
+        int diff = INT_MAX, res = 0;
+        for(int i=0; i < nums.size()-2; i++){
+            int low = i + 1, high = nums.size() - 1;
+            while(low < high){
+                int sum = nums[i] + nums[low] + nums[high];
+                if (sum == target)
+                    return sum;
+                if (abs(sum - target) < diff){
+                    diff = abs(sum - target);
+                    res = sum;
+                }
+                (sum < target)? low++ : high--;
+            }
+        }
+        return res;
+    }
+};
+```
+
+
+
+## 17. Letter Combinations of a Phone Number
+
+Given a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+![img](http://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Telephone-keypad2.svg/200px-Telephone-keypad2.svg.png)
+
+**Example:**
+
+```
+Input: "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+```
+
+**Note:**
+
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> ans;
+        if (digits.size()==0){
+            return ans;
+        }
+        map<char,vector<string>> m;
+        vector<string> b {"a","b","c"}; m['2'] = b;
+        vector<string> c {"d","e","f"}; m['3'] = c;
+        vector<string> d {"g","h","i"}; m['4'] = d;
+        vector<string> e {"j","k","l"}; m['5'] = e;
+        vector<string> f {"m","n","o"}; m['6'] = f;
+        vector<string> g {"p","q","r","s"}; m['7'] = g;
+        vector<string> h {"t","u","v"}; m['8'] = h;
+        vector<string> i {"w","x","y","z"}; m['9'] = i;
+        if (digits.size()==1){
+            return m[digits[0]];
+        }
+        vector<string> tmp = m[digits[0]];
+        for(int i = 1; i < digits.size(); i++){
+            for(int j = 0; j < tmp.size(); j++){
+                for(int k = 0; k < m[digits[i]].size(); k++){
+                    ans.push_back(tmp[j] + m[digits[i]][k]);
+                }
+            }
+            vector<string> tmp = ans;
+        }
+        return ans;
+    }
+};
+```
+
+
+
+## 18. 4Sum
+
+Given an array `nums` of *n* integers and an integer `target`, are there elements *a*, *b*, *c*, and *d* in `nums` such that *a* + *b* + *c* + *d* = `target`? Find all unique quadruplets in the array which gives the sum of `target`.
+
+**Note:**
+
+The solution set must not contain duplicate quadruplets.
+
+**Example:**
+
+```
+Given array nums = [1, 0, -1, 0, -2, 2], and target = 0.
+
+A solution set is:
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<vector<int>> output;
+        if(n < 4) return output;
+        sort(nums.begin(), nums.end());
+        for(int i=0; i<n-3; i++){
+            if(i > 0 and nums[i-1] == nums[i]) continue;
+            for(int j=i+1; j<n-2; j++){
+                if(j > i+1 and nums[j-1] == nums[j]) continue;
+                int left = j + 1, right = n - 1;
+                while(left < right){
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if(sum < target) left++;
+                    else if(sum > target) right--;
+                    else{
+                        output.push_back({nums[i], nums[j], nums[left++], nums[right--]});
+                        while(left < right and nums[left] == nums[left-1]) left++;
+                        while(left < right and nums[right] == nums[right+1]) right--;
+                    }
+                }
+            }
+        }
+        return output;
+    }
+};
+```
+
+
+
+## 19. Remove Nth Node From End of List
+
+Given a linked list, remove the *n*-th node from the end of list and return its head.
+
+**Example:**
+
+```
+Given linked list: 1->2->3->4->5, and n = 2.
+
+After removing the second node from the end, the linked list becomes 1->2->3->5.
+```
+
+**Note:**
+
+Given *n* will always be valid.
+
+**Follow up:**
+
+Could you do this in one pass?
+
+**CODE**
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        vector<ListNode*> arr;
+        ListNode* node = head;
+        ListNode* ans;
+        int len = 0;
+        while(node != NULL){
+            arr.push_back(node);
+            node = node->next;
+            len++;
+        }
+        if(len-n-1 >= 0){
+            arr[len-n-1]->next = arr[len-n]->next;
+            return head;
+        }
+        else if((len-n == 0) && (len > 1)){
+            return arr[len-n+1];
+        }
+        else{
+            return NULL;
+        }
+    }
+};
+```
+
+
+
+## 20. Valid Parentheses
+
+Given a string containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid.
+
+An input string is valid if:
+
+1. Open brackets must be closed by the same type of brackets.
+2. Open brackets must be closed in the correct order.
+
+Note that an empty string is also considered valid.
+
+**Example 1:**
+
+```
+Input: "()"
+Output: true
+```
+
+**Example 2:**
+
+```
+Input: "()[]{}"
+Output: true
+```
+
+**Example 3:**
+
+```
+Input: "(]"
+Output: false
+```
+
+**Example 4:**
+
+```
+Input: "([)]"
+Output: false
+```
+
+**Example 5:**
+
+```
+Input: "{[]}"
+Output: true
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> stk;
+        int len = s.size();
+        if(len % 2 != 0)
+            return false;
+        for(int i=0; i<len; i++){
+            if((s[i] == '(') || (s[i] == '[') || (s[i] == '{'))
+                stk.push(s[i]);
+            else{
+                //cout << stk.top();
+                if(!stk.empty() && s[i] == ')' && stk.top() == '(')
+                    stk.pop();
+                else if(!stk.empty() && s[i] == ']' && stk.top() == '[')
+                    stk.pop();
+                else if(!stk.empty() && s[i] == '}' && stk.top() == '{')
+                    stk.pop();
+                else
+                    return false;
+            }
+        }
+        if(stk.empty())
+            return true;
+        else
+            return false;
+    }
+};
+```
+
+
+
+## 21. Merge Two Sorted Lists
+
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+
+**Example:**
+
+```
+Input: 1->2->4, 1->3->4
+Output: 1->1->2->3->4->4
+```
+
+**CODE**
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        // be careful, you must new a class object!
+        ListNode* ans = new ListNode(0);
+        ListNode* tmp = new ListNode(0);
+        ListNode* head = new ListNode(0);
+        if(l1 == NULL && l2 != NULL)
+            return l2;
+        else if (l1 != NULL && l2 == NULL)
+            return l1;
+        else if (l1 == NULL && l2 == NULL)
+            return NULL;
+        else{
+            if (l1->val <= l2->val){
+                head->val = l1->val;
+            	l1 = l1->next;
+            }
+            else{
+                head->val = l2->val;
+            	l2 = l2->next;
+            }
+        }
+        ans = head;
+        while(l1 != NULL && l2 != NULL){
+            if (l1->val <= l2->val){
+                tmp = l1;
+                l1 = l1->next;
+            }
+            else{
+                tmp = l2;
+                l2 = l2->next;
+            }
+            ans->next = tmp;
+            ans = ans->next;
+        }
+        while(l1 != NULL){
+            ans->next = l1;
+            ans = ans->next;
+            l1 = l1->next;
+        }
+        while(l2 != NULL){
+            ans->next = l2;
+            ans = ans->next;
+            l2 = l2->next;
+        }
+        return head;
+    }
+};
+```
+
+
+
+## 22. Generate Parentheses
+
+Given *n* pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given *n* = 3, a solution set is:
+
+```
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        func(ans, "", 0, 0, n);
+        return ans;
+    }
+    void func(vector<string>& ans, string cur,int left, int right, int n) {
+        if(cur.size() == n*2){
+            ans.push_back(cur);
+            return;
+        }
+        if(left < n){
+            func(ans, cur+"(", left+1, right, n);
+        }
+        if(right < left){
+            func(ans, cur+")", left, right+1, n);
+        }
+    }
+};
+```
+
+
+
+## 23. Merge k Sorted Lists
+
+Merge *k* sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+**Example:**
+
+```
+Input:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+Output: 1->1->2->3->4->4->5->6
+```
+
+**CODE**
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        ListNode* head = new ListNode(0);
+        ListNode* cur = head;
+        int index = 0;
+        while(true){
+            bool flag = true;
+            int min_val = 100000;
+            for(int i=0; i<lists.size(); i++){
+                if(lists[i]){
+                    if(lists[i]->val <= min_val){
+                        min_val = lists[i]->val;
+                        index = i;
+                        flag = false;
+                    }
+                }
+            }
+            if(flag){
+                cur->next = NULL;
+                break;
+            }
+            ListNode* node = new ListNode(lists[index]->val);
+            cur->next = node;
+            cur = cur->next;
+            lists[index] = lists[index]->next;
+        }
+        return head->next;
     }
 };
 ```
