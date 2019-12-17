@@ -1483,6 +1483,322 @@ public:
 
 
 
+## 24. Swap Nodes in Pairs
+
+Given a linked list, swap every two adjacent nodes and return its head.
+
+You may **not** modify the values in the list's nodes, only nodes itself may be changed.
+
+**Example:**
+
+```
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+```
+
+**CODE**
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(!head || !head->next) return head;
+        ListNode* temp;
+        temp = head->next;
+        head->next = swapPairs(head->next->next);
+        temp->next = head;
+        return temp;
+    }
+};
+```
+
+
+
+## 25. Reverse Nodes in k-Group
+
+Given a linked list, reverse the nodes of a linked list *k* at a time and return its modified list.
+
+*k* is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of *k* then left-out nodes in the end should remain as it is.
+
+
+
+**Example:**
+
+Given this linked list: `1->2->3->4->5`
+
+For *k* = 2, you should return: `2->1->4->3->5`
+
+For *k* = 3, you should return: `3->2->1->4->5`
+
+**Note:**
+
+- Only constant extra memory is allowed.
+- You may not alter the values in the list's nodes, only nodes itself may be changed.
+
+**CODE**
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        
+    }
+};
+```
+
+
+
+## 26. Remove Duplicates from Sorted Array
+
+Given a sorted array *nums*, remove the duplicates [**in-place**](https://en.wikipedia.org/wiki/In-place_algorithm) such that each element appear only *once* and return the new length.
+
+Do not allocate extra space for another array, you must do this by **modifying the input array [in-place](https://en.wikipedia.org/wiki/In-place_algorithm)** with O(1) extra memory.
+
+**Example 1:**
+
+```
+Given nums = [1,1,2],
+
+Your function should return length = 2, with the first two elements of nums being 1 and 2 respectively.
+
+It doesn't matter what you leave beyond the returned length.
+```
+
+**Example 2:**
+
+```
+Given nums = [0,0,1,1,1,2,2,3,3,4],
+
+Your function should return length = 5, with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively.
+
+It doesn't matter what values are set beyond the returned length.
+```
+
+**Clarification:**
+
+Confused why the returned value is an integer but your answer is an array?
+
+Note that the input array is passed in by **reference**, which means modification to the input array will be known to the caller as well.
+
+Internally you can think of this:
+
+```
+// nums is passed in by reference. (i.e., without making a copy)
+int len = removeDuplicates(nums);
+
+// any modification to nums in your function would be known by the caller.
+// using the length returned by your function, it prints the first len elements.
+for (int i = 0; i < len; i++) {
+    print(nums[i]);
+}
+```
+
+**CODE**
+
+```cpp
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if(nums.empty())
+            return 0;
+        if (nums.size() == 1)
+		    return 1;
+        vector<int>::iterator i;
+        i = nums.begin();
+        while (i < nums.end()-1) {
+            if (*i == *(i+1)) 
+                i = nums.erase(i);
+            else
+                i += 1;
+        }
+        return nums.size();
+    }
+};
+```
+
+
+
+## 27. Remove Element
+
+Given an array *nums* and a value *val*, remove all instances of that value [**in-place**](https://en.wikipedia.org/wiki/In-place_algorithm) and return the new length.
+
+Do not allocate extra space for another array, you must do this by **modifying the input array [in-place](https://en.wikipedia.org/wiki/In-place_algorithm)** with O(1) extra memory.
+
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
+
+**Example 1:**
+
+```
+Given nums = [3,2,2,3], val = 3,
+
+Your function should return length = 2, with the first two elements of nums being 2.
+
+It doesn't matter what you leave beyond the returned length.
+```
+
+**Example 2:**
+
+```
+Given nums = [0,1,2,2,3,0,4,2], val = 2,
+
+Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4.
+
+Note that the order of those five elements can be arbitrary.
+
+It doesn't matter what values are set beyond the returned length.
+```
+
+**Clarification:**
+
+Confused why the returned value is an integer but your answer is an array?
+
+Note that the input array is passed in by **reference**, which means modification to the input array will be known to the caller as well.
+
+Internally you can think of this:
+
+```
+// nums is passed in by reference. (i.e., without making a copy)
+int len = removeElement(nums, val);
+
+// any modification to nums in your function would be known by the caller.
+// using the length returned by your function, it prints the first len elements.
+for (int i = 0; i < len; i++) {
+    print(nums[i]);
+}
+```
+
+**CODE**
+
+```cpp
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        vector<int>::iterator i;
+        i = nums.begin();
+        while(i < nums.end()){
+            if(*i == val)
+                i = nums.erase(i);
+            else
+                i++;
+        }
+        return nums.size();
+    }
+};
+```
+
+
+
+## 28. Implement strStr()
+
+Implement [strStr()](http://www.cplusplus.com/reference/cstring/strstr/).
+
+Return the index of the first occurrence of needle in haystack, or **-1** if needle is not part of haystack.
+
+**Example 1:**
+
+```
+Input: haystack = "hello", needle = "ll"
+Output: 2
+```
+
+**Example 2:**
+
+```
+Input: haystack = "aaaaa", needle = "bba"
+Output: -1
+```
+
+**Clarification:**
+
+What should we return when `needle` is an empty string? This is a great question to ask during an interview.
+
+For the purpose of this problem, we will return 0 when `needle` is an empty string. This is consistent to C's [strstr()](http://www.cplusplus.com/reference/cstring/strstr/) and Java's [indexOf()](https://docs.oracle.com/javase/7/docs/api/java/lang/String.html#indexOf(java.lang.String)).
+
+**CODE**
+
+```cpp
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        if(needle.length() == 0)
+            return 0;
+        for(int i=0; i<haystack.length(); i++){
+            int index = 0, j = i;
+            while(index < needle.length()){
+                if(j<haystack.length() && haystack[j] == needle[index]){
+                    j++;
+                    index++;
+                }
+                else{
+                    break;
+                }
+            }
+            if(index == needle.length())
+                return j - index;
+        }
+        return -1;
+    }
+};
+```
+
+
+
+## 29. Divide Two Integers
+
+Given two integers `dividend` and `divisor`, divide two integers without using multiplication, division and mod operator.
+
+Return the quotient after dividing `dividend` by `divisor`.
+
+The integer division should truncate toward zero.
+
+**Example 1:**
+
+```
+Input: dividend = 10, divisor = 3
+Output: 3
+```
+
+**Example 2:**
+
+```
+Input: dividend = 7, divisor = -3
+Output: -2
+```
+
+**Note:**
+
+- Both dividend and divisor will be 32-bit signed integers.
+- The divisor will never be 0.
+- Assume we are dealing with an environment which could only store integers within the 32-bit signed integer range: [−2^31^,  2^31^ − 1]. For the purpose of this problem, assume that your function returns 2^31^ − 1 when the division result overflows.
+
+**CODE**
+
+```cpp
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        if((dividend && divisor) == true )
+    }
+};
+```
+
+
+
 
 
 ## 92. Reverse Linked List II
