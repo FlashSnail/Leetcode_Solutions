@@ -1792,7 +1792,116 @@ Output: -2
 class Solution {
 public:
     int divide(int dividend, int divisor) {
-        if((dividend && divisor) == true )
+        if (dividend == INT_MIN && divisor == -1) {
+            return INT_MAX;
+        }
+        long dvd = labs(dividend), dvs = labs(divisor), ans = 0;
+        int sign = dividend > 0 ^ divisor > 0 ? -1 : 1;
+        while (dvd >= dvs) {
+            long temp = dvs, m = 1;
+            while (temp << 1 <= dvd) {
+                temp <<= 1;
+                m <<= 1;
+            }
+            dvd -= temp;
+            ans += m;
+        }
+        return sign * ans;
+    }
+};
+```
+
+
+
+## 30. Substring with Concatenation of All Words
+
+You are given a string, **s**, and a list of words, **words**, that are all of the same length. Find all starting indices of substring(s) in **s** that is a concatenation of each word in **words** exactly once and without any intervening characters.
+
+ 
+
+**Example 1:**
+
+```
+Input:
+  s = "barfoothefoobarman",
+  words = ["foo","bar"]
+Output: [0,9]
+Explanation: Substrings starting at index 0 and 9 are "barfoo" and "foobar" respectively.
+The output order does not matter, returning [9,0] is fine too.
+```
+
+**Example 2:**
+
+```
+Input:
+  s = "wordgoodgoodgoodbestword",
+  words = ["word","good","best","word"]
+Output: []
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        vector<int> ans;
+        if(words.size() == 0)
+            return ans;
+        int len = words[0].size();
+        int window = len * words.size();
+        if(s.size() < window)
+            return ans;
+        map<string, int> dict;
+        for(int i=0; i<words.size(); i++)
+            dict[words[i]] += 1;
+
+        for(int i=0; i+window<=s.size(); i++){
+            bool flag = true;
+            vector<string> tmp = words;
+            map<string, int> m_tmp = dict;
+            for(int j=0; j<words.size(); j++){
+                string sub = s.substr(i+j*len, len);
+                if (m_tmp.find(sub) == m_tmp.end()|| m_tmp[sub] == 0){
+                    flag = false;
+                    break;
+                }
+                else
+                    m_tmp[sub] -= 1;
+            }
+            if(flag)
+                ans.push_back(i);
+        }
+        return ans;
+    }
+};
+```
+
+
+
+## 31. Next Permutation
+
+Implement **next permutation**, which rearranges numbers into the lexicographically next greater permutation of numbers.
+
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+
+The replacement must be **[in-place](http://en.wikipedia.org/wiki/In-place_algorithm)** and use only constant extra memory.
+
+Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+
+```
+1,2,3 → 1,3,2
+3,2,1 → 1,2,3
+1,1,5 → 1,5,1
+```
+
+**CODE**
+
+```c++
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        
     }
 };
 ```
