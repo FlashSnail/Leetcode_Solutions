@@ -2299,8 +2299,48 @@ A sudoku puzzle...
 ```C++
 class Solution {
 public:
+    bool col[10][10],row[10][10],f[10][10];
+    bool flag = false;
     void solveSudoku(vector<vector<char>>& board) {
+         memset(col,false,sizeof(col));
+         memset(row,false,sizeof(row));
+         memset(f,false,sizeof(f));
+         for(int i = 0; i < 9;i++){
+             for(int j = 0; j < 9;j++){
+                 if(board[i][j] == '.')   continue;
+                 int temp = 3*(i/3)+j/3;
+                 int num = board[i][j]-'0';
+                 col[j][num] = row[i][num] = f[temp][num] = true;
+             }
+         }
+         dfs(board,0,0);
+    }
+    void dfs(vector<vector<char>>& board,int i,int j){
+        if(flag == true)  return ;
+        if(i >= 9){
+            flag = true;
+            return ;
+        }
+        if(board[i][j] != '.'){
+             if(j < 8)  dfs(board,i,j+1);
+             else dfs(board,i+1,0);
+             if(flag)  return;
+        }
         
+        else{
+            int temp = 3*(i/3)+j/3;
+            for(int n = 1; n <= 9; n++){
+                if(!col[j][n] && !row[i][n] && !f[temp][n]){
+                    board[i][j] = n + '0';
+                    col[j][n] = row[i][n] = f[temp][n] = true;
+                    if(j < 8)  dfs(board,i,j+1);
+                    else dfs(board,i+1,0);
+                    col[j][n] = row[i][n] = f[temp][n] = false;
+                    if(flag)  return;
+                }
+            }
+            board[i][j] = '.';
+        }
     }
 };
 ```
@@ -2575,6 +2615,56 @@ class Solution(object):
 
 
 
+## 118. Pascal's Triangle
+
+Given a non-negative integer *numRows*, generate the first *numRows* of Pascal's triangle.
+
+![img](https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif)
+In Pascal's triangle, each number is the sum of the two numbers directly above it.
+
+**Example:**
+
+```
+Input: 5
+Output:
+[
+     [1],
+    [1,1],
+   [1,2,1],
+  [1,3,3,1],
+ [1,4,6,4,1]
+]
+```
+
+**CODE**
+
+```C++
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        vector<vector<int>> ans;
+        if(numRows <= 0)
+            return ans;
+        vector<int> tmp {1};
+        ans.push_back(tmp);
+        if(numRows == 1)
+            return ans;
+        
+        tmp.push_back(1);
+        ans.push_back(tmp);
+        for(int i=2; i<numRows; i++){
+            vector<int> tmp (i+1, 0);
+            tmp[0] = 1, tmp[i] = 1;
+            for(int j=1; j<i; j++){
+                tmp[j] = ans[i-1][j-1]+ans[i-1][j];
+            }
+            ans.push_back(tmp);
+        }
+        return ans;
+    }
+};
+```
+
 
 
 ## 206. Reverse Linked List
@@ -2629,6 +2719,70 @@ class Solution(object):
         b.next = a
         return b
 ```
+
+
+
+## 236. Lowest Common Ancestor of a Binary Tree
+
+Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+According to the [definition of LCA on Wikipedia](https://en.wikipedia.org/wiki/Lowest_common_ancestor): “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow **a node to be a descendant of itself**).”
+
+Given the following binary tree: root = [3,5,1,6,2,0,8,null,null,7,4]
+
+![img](https://assets.leetcode.com/uploads/2018/12/14/binarytree.png)
+
+ 
+
+**Example 1:**
+
+```
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+```
+
+**Example 2:**
+
+```
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+Output: 5
+Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+```
+
+**CODE**
+
+```C++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* ans = NULL;
+    bool findNode(TreeNode* node, TreeNode* p, TreeNode* q){
+        if (node == NULL)
+            return false;
+        int left = findNode(node->left, p, q) ? 1 : 0;
+        int right = findNode(node->right, p, q) ? 1 : 0;
+        int thisNode = ((node == p) || (node == q)) ? 1 : 0;
+        if(left + right + thisNode >= 2)
+            this->ans = node;
+        return (left + right + thisNode > 0);
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        this->findNode(root, p, q);
+        return ans;
+    }
+};
+```
+
+
 
 
 
